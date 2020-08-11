@@ -7,6 +7,7 @@ pipeline {
         }
     options {
         skipStagesAfterUnstable()
+        withAWS('bashayr')
     }
     stages {
         stage('test') {
@@ -35,5 +36,7 @@ pipeline {
                 }
             }
         }
+        
+      
     }
 }
