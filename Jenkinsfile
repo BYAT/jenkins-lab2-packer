@@ -7,7 +7,7 @@ pipeline {
         }
     options {
         skipStagesAfterUnstable()
-        withCredentials(awsCredentials)
+
     }
     stages {
         stage('test') {
