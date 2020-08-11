@@ -17,9 +17,8 @@ pipeline {
         }
         stage ('release') {
             environment {
-                CREDS = credentials('bashayr')
-                AWS_ACCESS_KEY_ID= "${CREDS_USR}"
-                AWS_SECRET_ACCESS_KEY = "${CREDS_PSW}"
+                AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
+                AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
                 TF_NAMESPACE='bashayr'
                 OWNER='bashayr'
                 PROJECT_NAME="${JOB_NAME}"
