@@ -31,7 +31,7 @@ pipeline {
         }
         stage('build') {
             steps {
-                timeout(time: 0, unit:'MINUTES'){
+                timeout(time: 1, unit:'MINUTES'){
                 sh 'packer build packer.json'
                 }
             }
