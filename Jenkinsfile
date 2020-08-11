@@ -23,6 +23,11 @@ pipeline {
         stage ('release') {
             environment {
                 CREDS = credentials('bashayr')
+                AWS_ACCESS_KEY_ID= ${CREDS_USR}
+                AWS_SECRET_ACCESS_KEY = ${CREDS_PSW}
+                TF_NAMESPACE='bashayr'
+                OWNER='bashayr'
+                PROJECT_NAME=${JOB_NAME}
             }
             steps {
                 sh "whoami"
