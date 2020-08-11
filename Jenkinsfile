@@ -1,8 +1,9 @@
 pipeline { 
     agent{ 
         docker {
-            image 'alpine:3.7'
-            }
+	    image "bryandollery/terraform-packer-aws-alpine"
+            args "-u root"
+	}
         }
     options {
         skipStagesAfterUnstable()
