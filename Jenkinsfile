@@ -24,7 +24,7 @@ pipeline {
             }
             steps {
                 sh "whoami"
-                sh "docker login -u ${CREDS_USR}"
+                sh "docker login -u ${CREDS_USR} -p ${CREDS_PSW}"
             }
         }
         stage('build') {
