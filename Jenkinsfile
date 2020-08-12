@@ -21,7 +21,7 @@ pipeline {
   }
   post {
     success {
-        build quietPeriod: 0, wait: false, job: 'bashayr-lab2-tf'  
+        build quietPeriod: 0, wait: false, job: 'bashayr'  
     }
   }
 }
