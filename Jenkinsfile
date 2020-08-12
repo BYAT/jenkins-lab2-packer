@@ -1,42 +1,27 @@
-pipeline { 
-    agent{ 
-        docker {
-	    image "bryandollery/terraform-packer-aws-alpine"
-            args "-u root -entrypoint=''"
-	}
-        }
-    options {
-        skipStagesAfterUnstable()
-
+pipeline {
+  agent {
+    docker {
+      image "bryandollery/terraform-packer-aws-alpine"
+      args "-u root --entrypoint=''"
     }
-    stages {
-        stage('test') {
-            steps {
-                git(url: 'https://github.com/BYAT/jenkins-lab2-packer', branch: 'master')
-            }
-        }
-        stage ('release') {
-            environment {
-                CREDS = credentials('bashayr')
-                AWS_ACCESS_KEY_ID     = "${CREDS_USR}"
-                AWS_SECRET_ACCESS_KEY = "${CREDS_PSW}"
-                TF_NAMESPACE='bashayr'
-                OWNER='bashayr'
-                PROJECT_NAME="webservice"
-            }
-            steps {
-                sh "whoami"
-                sh "docker login -u ${CREDS_USR} -p ${CREDS_PSW}"
-            }
-        }
-        stage('build') {
-            steps {
-                timeout(time: 1, unit:'MINUTES'){
-                sh 'packer build packer.json'
-                }
-            }
-        }
-        
-      
+  }
+  environment {
+    CREDS = credentials('bashayr')
+    AWS_ACCESS_KEY_ID = "${CREDS_USR}"
+    AWS_SECRET_ACCESS_KEY = "${CREDS_PSW}"
+    OWNER = 'bashayr'
+    PROJECT_NAME = 'web-server'
+  }
+  stages {
+    stage("build") {
+      steps {
+        sh 'packer build packer.json'
+      }
     }
+  }
+  post {
+    success {
+        build quietPeriod: 0, wait: false, job: 'bashayr-lab2-tf'  
+    }
+  }
 }
