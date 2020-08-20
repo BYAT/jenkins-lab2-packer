@@ -1,36 +1,29 @@
 #!/bin/bash
-
-curl -L get.docker.com |sh
+# Install docker
+curl -Ls get.docker.com | sh
 sudo usermod -aG docker ubuntu
 
+# Create directory to be served
+sudo mkdir -p /home/ubuntu/api
+sudo chmod a+rwx /home/ubuntu/api
+sudo chown ubuntu:ubuntu /home/ubuntu/api
 
-sudo docker pull nginx
-sudo mkdir /home/ubuntu/api
-sudo touch /home/ubuntu/api/index.html
+# Configure nginx container to boot with the machine
 sudo touch /etc/systemd/system/webserver.service
 sudo chmod a+rw /etc/systemd/system/webserver.service
-
-cat << EOF >> /etc/systemd/system/webserver.service
+cat <<EOF > /etc/systemd/system/webserver.service
 [Unit]
-Description=The nginx HTTP and reverse proxy server
-Documentation=http://nginx.org/en/docs/
-Requires=webserver.service
+Description=Nginx API address server
 After=docker.service
 
 [Service]
-ExecStart=sudo docker container run --name some-nginx-1 -d -p 80:80 --restart=always -v /home/ubuntu/api:/usr/share/nginx/html:ro nginx
-
-
-ExecReload=/usr/bin/docker exec some-nginx nginx -s reload
-
-# Restart 2 seconds after docker run exited with an error status.
-
+Type=simple
+ExecStart=sudo docker container run -d --name nginx -p 80:80 --restart=always -v /home/ubuntu/api/:/usr/share/nginx/html:ro nginx
 
 [Install]
 WantedBy=multi-user.target
 EOF
-
-sudo chmod a+xw /etc/systemd/system/webserver.service
+sudo chmod a-xw /etc/systemd/system/webserver.service
 sudo systemctl daemon-reload
-sudo systemctl enable webserver.service
+sudo systemctl enable webserver
 sudo systemctl start webserver
